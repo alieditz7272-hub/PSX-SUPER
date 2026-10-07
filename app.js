@@ -97,18 +97,55 @@ const num = n => { const v=Number(n); return Number.isFinite(v)? v : null; };
 const pick = (o, keys) => { for(const k of keys){ if(o && o[k]!==undefined && o[k]!==null && o[k]!=="") return o[k]; } return null; };
 function set(id, value){ const el=$(id); if(el) el.textContent=value??"—"; }
 
-async function fetchWithTimeout(url, ms=15000){
+async function wakeAPI(){
+  // Render wake-up ping - is se API 10 sec me jag jata hai
+  try { 
+    await fetch(CFG.rest + "/", {mode:"no-cors", cache:"no-store"}); 
+    console.log("Wake ping sent");
+  } catch {}
+}
+
+async function fetchWithTimeout(url, ms=8000){
   const c = new AbortController(); const t=setTimeout(()=>c.abort(), ms);
   try{ const r=await fetch(url, {signal:c.signal, cache:"no-store"}); clearTimeout(t); return r; }catch(e){ clearTimeout(t); throw e; }
 }
+async function getJSONParallel(urls){
+  // Parallel race - jo pehle jawab de woh jeet gaya - FASTEST
+  const promises = urls.map(u => 
+    fetchWithTimeout(u, 8000).then(async r => {
+      if(!r.ok) throw new Error("http "+r.status);
+      const txt = await r.text();
+      if(!txt || txt.trim().startsWith("<") || txt.length < 5) throw new Error("bad data");
+      return JSON.parse(txt);
+    })
+  );
+  // Return first success
+  for(const p of promises){
+    try { const res = await Promise.race(promises); if(res) return res; } catch {}
+  }
+  // If all fail, try sequential
+  throw new Error("All parallel failed");
+}
+
 async function getJSON(url){
-  const proxies=[url, `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`, `https://corsproxy.io/?${encodeURIComponent(url)}`];
+  const proxies=[
+    url, 
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+    `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
+  ];
+  // QUICK FETCH: Try parallel for speed
+  try {
+    const j = await getJSONParallel(proxies);
+    if(j) return j;
+  } catch {}
+  // Fallback sequential
   for(const p of proxies){
     try{
-      const r=await fetchWithTimeout(p, 15000);
+      const r=await fetchWithTimeout(p, 8000);
       if(!r.ok) continue;
       const txt=await r.text();
-      if(!txt || txt.trim().startsWith("<")) continue;
+      if(!txt || txt.trim().startsWith("<") || txt.length < 10) continue;
       const j=JSON.parse(txt);
       if(j) return j;
     }catch(e){ console.log("proxy fail", p); }
@@ -165,6 +202,13 @@ function render(rows,a){
 }
 
 function drawChart(data){ const cv=$("chart"); if(!cv) return; const ctx=cv.getContext('2d'); const w=cv.width=cv.clientWidth*2, h=cv.height=280; ctx.clearRect(0,0,w,h); if(!data.length) return; const min=Math.min(...data), max=Math.max(...data); const pad=20; ctx.strokeStyle="#0a3d2e"; ctx.lineWidth=3; ctx.beginPath(); data.forEach((v,i)=>{ const x=pad+(i/(data.length-1))*(w-pad*2); const y=h-pad-((v-min)/(max-min||1))*(h-pad*2); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.stroke(); ctx.lineTo(w-pad,h-pad); ctx.lineTo(pad,h-pad); ctx.closePath(); ctx.fillStyle="rgba(10,61,46,0.08)"; ctx.fill(); }
+
+async function loadAllQuick(){
+  // ROADMAP: 1.Wake -> 2.Parallel Fetch -> 3.Mapping -> 4.Cache -> 5.Analyze -> 6.Display
+  console.log("ROADMAP START: Fetching", state.symbol);
+  wakeAPI(); // non-blocking wake
+  return loadAll();
+}
 
 async function loadAll(){
   if(state.loading) return; state.loading=true;
@@ -227,6 +271,9 @@ function init(){
 }
 
 window.addEventListener('load', ()=>{
+  // Quick pre-wake on page load
+  try { fetch(CFG.rest + "/", {mode:"no-cors"}); } catch {}
+
   state.symbol=localStorage.getItem("psx_kse100_last")||"KSE100";
   init();
   const chip=document.querySelector(`[data-sym="${state.symbol}"]`); if(chip) chip.classList.add("active");
