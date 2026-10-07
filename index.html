@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f4f46">
+<meta name="description" content="NH PSX Super Analysis">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<title>NH PSX Super Analysis</title>
+</head>
+<body>
+<div class="app-shell">
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">NH</div>
+    <div>
+      <div class="brand-name">NH-PSX</div>
+      <div class="brand-sub">Super Analysis</div>
+      <div class="developer">Developed by Nadeem Hassan</div>
+      <div class="wa">◉ 03009412177</div>
+    </div>
+  </div>
+  <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">☾</button>
+</header>
+
+<main class="content">
+  <section class="search-wrap">
+    <input id="searchInput" class="search" autocomplete="off" placeholder="Search Company or Symbol">
+    <div id="searchResults" class="search-results hidden"></div>
+    <div id="chips" class="chips"></div>
+  </section>
+
+  <section class="stock-head card">
+    <div>
+      <div id="symbol" class="symbol">SYS</div>
+      <div id="company" class="company">Loading...</div>
+      <div id="sector" class="muted">—</div>
+    </div>
+    <div class="price-box">
+      <div id="price" class="price">—</div>
+      <div id="change" class="change">—</div>
+    </div>
+  </section>
+
+  <section class="quote-grid">
+    <div class="mini card"><span>Open</span><b id="open">—</b></div>
+    <div class="mini card"><span>High</span><b id="high">—</b></div>
+    <div class="mini card"><span>Low</span><b id="low">—</b></div>
+    <div class="mini card"><span>Prev Close</span><b id="prev">—</b></div>
+  </section>
+
+  <section id="verdictCard" class="verdict card neutral">
+    <div class="verdict-label">Technical Verdict</div>
+    <div id="verdict" class="verdict-main">NO TRADE</div>
+    <div id="verdictMessage" class="verdict-message">Wait Please • No Clear Direction.</div>
+    <div id="marketStatus" class="market-status">Market status unavailable</div>
+  </section>
+
+  <section class="card">
+    <div class="card-title">EMA Values</div>
+    <div class="ema-grid">
+      <div class="ema e9"><span>EMA 9</span><b id="ema9">—</b></div>
+      <div class="ema e20"><span>EMA 20</span><b id="ema20">—</b></div>
+      <div class="ema e50"><span>EMA 50</span><b id="ema50">—</b></div>
+      <div class="ema e100"><span>EMA 100</span><b id="ema100">—</b></div>
+      <div class="ema e200"><span>EMA 200</span><b id="ema200">—</b></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-title">Pivot Points</div>
+    <div class="pivot-grid">
+      <div><span>P</span><b id="p">—</b></div>
+      <div><span>S1</span><b id="s1">—</b></div>
+      <div><span>S2</span><b id="s2">—</b></div>
+      <div><span>R1</span><b id="r1">—</b></div>
+      <div><span>R2</span><b id="r2">—</b></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-title">Timeframe</div>
+    <div id="timeframes" class="timeframes"></div>
+  </section>
+
+  <section class="chart-card card">
+    <div class="chart-head">
+      <div><b id="chartTitle">SYS</b><span id="chartTf">Daily</span></div>
+      <div id="volumeState" class="volume-state">—</div>
+    </div>
+    <div class="chart-wrap"><canvas id="chart"></canvas></div>
+  </section>
+
+  <section class="indicator-grid">
+    <div id="intradayCard" class="indicator card"><span>Intraday</span><b>—</b></div>
+    <div id="shortCard" class="indicator card"><span>Short Term</span><b>—</b></div>
+    <div id="swingCard" class="indicator card"><span>Swing</span><b>—</b></div>
+    <div id="rsiCard" class="indicator card"><span>RSI</span><b>—</b></div>
+    <div id="macdCard" class="indicator card"><span>MACD</span><b>—</b></div>
+    <div id="volCard" class="indicator card"><span>Volume</span><b>—</b></div>
+  </section>
+
+  <section id="trendMessage" class="trend-message neutral">Wait Please • No Clear Direction.</section>
+  <div id="updated" class="updated">Data update time: —</div>
+</main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
