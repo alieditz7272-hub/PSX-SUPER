@@ -1,17 +1,9 @@
 {
-  "name": "NH PSX Super Analysis",
-  "short_name": "NH-PSX",
-  "start_url": "./",
+  "name": "PSX-SUPER - Pakistan Stock Exchange Super Analysis",
+  "short_name": "PSX-SUPER",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f4f8f7",
-  "theme_color": "#0f4f46",
-  "description": "NH PSX Super Analysis",
-  "icons": [
-    {
-      "src": "assets/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ]
+  "background_color": "#eef4f1",
+  "theme_color": "#0a3d2e",
+  "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/2150/2150150.png", "sizes": "512x512", "type": "image/png" }]
 }
